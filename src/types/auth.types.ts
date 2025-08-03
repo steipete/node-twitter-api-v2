@@ -1,4 +1,4 @@
-import type TwitterApi from '../client';
+// Removed direct import to fix circular dependency - TwitterApi will be typed dynamically
 import { TypeOrArrayOf } from './shared.types';
 
 export type TOAuth2Scope = 'tweet.read' | 'tweet.write' | 'tweet.moderate.write' | 'users.read' | 'users.email' | 'follows.read' | 'follows.write'
@@ -64,11 +64,11 @@ export interface LoginResult {
   screenName: string;
   accessToken: string;
   accessSecret: string;
-  client: TwitterApi;
+  client: any; // TwitterApi - typed as any to avoid circular dependency
 }
 
 export interface IParsedOAuth2TokenResult {
-  client: TwitterApi;
+  client: any; // TwitterApi - typed as any to avoid circular dependency
   expiresIn: number;
   accessToken: string;
   scope: TOAuth2Scope[];

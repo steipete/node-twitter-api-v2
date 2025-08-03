@@ -1,4 +1,4 @@
-import TwitterApi from '.';
+// Removed circular import to fix Turbopack compatibility
 import TwitterApiBase from '../client.base';
 import {
   AccessOAuth2TokenArgs,
@@ -151,6 +151,8 @@ export default class TwitterApiReadOnly extends TwitterApiBase {
       { oauth_token: tokens.accessToken, oauth_verifier }
     );
 
+    // Dynamic import to avoid circular dependency
+    const { TwitterApi } = await import('.');
     const client = new TwitterApi({
       appKey: tokens.appKey,
       appSecret: tokens.appSecret,
@@ -184,7 +186,8 @@ export default class TwitterApiReadOnly extends TwitterApiBase {
     if (tokens.type !== 'oauth-1.0a')
       throw new Error('You must setup TwitterApi instance with consumer keys to accept app-only login');
 
-    // Create a client with Basic authentication
+    // Create a client with Basic authentication using dynamic import
+    const { TwitterApi } = await import('.');
     const basicClient = new TwitterApi({ username: tokens.appKey, password: tokens.appSecret }, this._requestMaker.clientSettings);
     const res = await basicClient.post<BearerTokenResult>('https://api.x.com/oauth2/token', { grant_type: 'client_credentials' });
 
@@ -302,7 +305,7 @@ export default class TwitterApiReadOnly extends TwitterApiBase {
       client_secret: this._requestMaker.clientSecret,
     });
 
-    return this.parseOAuth2AccessTokenResult(accessTokenResult);
+    return await this.parseOAuth2AccessTokenResult(accessTokenResult);
   }
 
   /**
@@ -330,7 +333,7 @@ export default class TwitterApiReadOnly extends TwitterApiBase {
       client_secret: this._requestMaker.clientSecret,
     });
 
-    return this.parseOAuth2AccessTokenResult(accessTokenResult);
+    return await this.parseOAuth2AccessTokenResult(accessTokenResult);
   }
 
   /**
@@ -355,7 +358,9 @@ export default class TwitterApiReadOnly extends TwitterApiBase {
     });
   }
 
-  protected parseOAuth2AccessTokenResult(result: AccessOAuth2TokenResult): IParsedOAuth2TokenResult {
+  protected async parseOAuth2AccessTokenResult(result: AccessOAuth2TokenResult): Promise<IParsedOAuth2TokenResult> {
+    // Dynamic import to avoid circular dependency
+    const { TwitterApi } = await import('.');
     const client = new TwitterApi(result.access_token, this._requestMaker.clientSettings);
     const scope = result.scope.split(' ').filter(e => e) as TOAuth2Scope[];
 
