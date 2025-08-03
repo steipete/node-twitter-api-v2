@@ -373,11 +373,11 @@ export class RequestHandlerHelper<T> {
     const headers = this.requestData.options.headers ?? {};
 
     if (this.requestData.compression === true || this.requestData.compression === 'brotli') {
-      headers['accept-encoding'] = 'br;q=1.0, gzip;q=0.8, deflate;q=0.5, *;q=0.1';
+      (headers as any)['accept-encoding'] = 'br;q=1.0, gzip;q=0.8, deflate;q=0.5, *;q=0.1';
     } else if (this.requestData.compression === 'gzip') {
-      headers['accept-encoding'] = 'gzip;q=1, deflate;q=0.5, *;q=0.1';
+      (headers as any)['accept-encoding'] = 'gzip;q=1, deflate;q=0.5, *;q=0.1';
     } else if (this.requestData.compression === 'deflate') {
-      headers['accept-encoding'] = 'deflate;q=1, *;q=0.1';
+      (headers as any)['accept-encoding'] = 'deflate;q=1, *;q=0.1';
     }
 
     if (TwitterApiV2Settings.debug) {

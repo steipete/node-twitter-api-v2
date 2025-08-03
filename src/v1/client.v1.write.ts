@@ -394,8 +394,8 @@ export default class TwitterApiv1ReadWrite extends TwitterApiv1ReadOnly {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         fs.close(file, () => {});
       }
-      else if (typeof fileHandle! === 'object' && !(fileHandle instanceof Buffer)) {
-        fileHandle.close();
+      else if (typeof fileHandle! === 'object' && !(fileHandle instanceof Buffer) && 'close' in fileHandle) {
+        (fileHandle as any).close();
       }
     }
   }
@@ -464,8 +464,8 @@ export default class TwitterApiv1ReadWrite extends TwitterApiv1ReadOnly {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         fs.close(file, () => {});
       }
-      else if (typeof fileHandle! === 'object' && !(fileHandle instanceof Buffer)) {
-        fileHandle.close();
+      else if (typeof fileHandle! === 'object' && !(fileHandle instanceof Buffer) && 'close' in fileHandle) {
+        (fileHandle as any).close();
       }
 
       throw e;

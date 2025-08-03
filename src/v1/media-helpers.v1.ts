@@ -23,8 +23,10 @@ export async function readFileIntoBuffer(file: TUploadableMedia) {
     });
   } else if (handle instanceof Buffer) {
     return handle;
+  } else if ('readFile' in handle) {
+    return (handle as any).readFile();
   } else {
-    return handle.readFile();
+    throw new Error('Invalid file handle type');
   }
 }
 
@@ -55,8 +57,10 @@ export async function getFileSizeFromFileHandle(fileHandle: TFileHandle) {
     return stats.size;
   } else if (fileHandle instanceof Buffer) {
     return fileHandle.length;
+  } else if ('stat' in fileHandle) {
+    return (await (fileHandle as any).stat()).size;
   } else {
-    return (await fileHandle.stat()).size;
+    throw new Error('Invalid file handle type for size calculation');
   }
 }
 
@@ -142,9 +146,11 @@ export async function readNextPartOf(file: TFileHandle, chunkLength: number, buf
       });
     });
   }
-  else {
-    const res = await file.read(buffer, 0, chunkLength, bufferOffset);
+  else if ('read' in file) {
+    const res = await (file as any).read(buffer, 0, chunkLength, bufferOffset);
     bytesRead = res.bytesRead;
+  } else {
+    throw new Error('Invalid file handle type for reading');
   }
 
   return [buffer, bytesRead];

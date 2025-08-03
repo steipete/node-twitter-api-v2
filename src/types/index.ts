@@ -5,4 +5,4 @@ export * from './responses.types';
 export * from './client.types';
 export * from './auth.types';
 export * from './plugins';
-export { IGetHttpRequestArgs } from './request-maker.mixin.types';
+export type { IGetHttpRequestArgs } from './request-maker.mixin.types';

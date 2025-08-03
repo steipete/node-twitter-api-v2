@@ -90,7 +90,7 @@ export class RequestParamHelpers {
       }
 
       if (Object.keys(body).length) {
-        return new URLSearchParams(body)
+        return new URLSearchParams(body as Record<string, string>)
           .toString()
           .replace(/\*/g, '%2A'); // URLSearchParams doesnt encode '*', but Twitter wants it encoded.
       }
@@ -104,7 +104,7 @@ export class RequestParamHelpers {
       const form = new FormDataHelper();
 
       for (const parameter in body) {
-        form.append(parameter, body[parameter]);
+        form.append(parameter, (body as any)[parameter]);
       }
 
       if (!headers['content-type']) {
@@ -120,10 +120,10 @@ export class RequestParamHelpers {
     options.headers = options.headers ?? {};
 
     if (typeof body === 'string') {
-      options.headers['content-length'] = Buffer.byteLength(body);
+      (options.headers as any)['content-length'] = Buffer.byteLength(body);
     }
     else {
-      options.headers['content-length'] = body.length;
+      (options.headers as any)['content-length'] = body.length;
     }
   }
 
